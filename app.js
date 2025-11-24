@@ -38,6 +38,7 @@ db.once("open", () =>{
 })
 
 const app = express();
+app.set('trust proxy', 1);
 
 app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
@@ -51,7 +52,6 @@ app.use(express.static(path.join(__dirname, 'public')))
 const secret = process.env.SECRET || 'thisshouldbeabettersecret!';
 const store = MongoStore.create({
     mongoUrl: dbUrl,
-    secret,
     touchAfter: 24 * 3600
 });
 
@@ -68,7 +68,7 @@ const sessionConfig = {
     cookie: {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }
